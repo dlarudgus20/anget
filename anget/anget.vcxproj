@@ -161,6 +161,8 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ObjectFactory.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Slime.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="WallObject.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -171,6 +173,8 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="ObjectFactory.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Slime.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="WallObject.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

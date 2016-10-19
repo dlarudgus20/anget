@@ -39,6 +39,12 @@
     <ClCompile Include="WallObject.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Slime.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="conlib.h">
@@ -63,6 +69,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="WallObject.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Slime.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
