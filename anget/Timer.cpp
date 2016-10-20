@@ -8,14 +8,14 @@ Timer& Timer::get()
     return obj;
 }
 
-void Timer::addEntry(std::function<void()> fn, unsigned time, int repeat)
+void Timer::addEntry(std::function<void()> fn, unsigned time, unsigned repeat)
 {
     entryList_.push_back({ std::move(fn), tick_ + time, time, repeat });
 }
 
-void Timer::runTick()
+void Timer::runTick(unsigned dt)
 {
-    ++tick_;
+    tick_ += dt;
 
     for (auto it = entryList_.begin(); it != entryList_.end(); )
     {
@@ -24,17 +24,17 @@ void Timer::runTick()
         if (entry.timeout <= tick_)
         {
             entry.fn();
-            if (entry.repeat != -1)
+
+            if (entry.repeat != 0)
             {
-                if (entry.repeat == 0)
+                if (--entry.repeat == 0)
                 {
                     entryList_.erase(it++);
                     continue;
                 }
-
-                --entry.repeat;
-                entry.timeout += entry.time;
             }
+
+            entry.timeout += entry.time;
         }
 
         ++it;

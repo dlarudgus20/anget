@@ -18,16 +18,12 @@ Map::Map(const std::string& strMap, int width, int height)
 {
     assert(strMap.size() == width * height);
 
-    objMap_.reserve(strMap.size());
+    objMap_.resize(strMap.size(), nullptr);
     for (std::size_t i = 0; i < strMap.size(); ++i)
     {
-        if (strMap[i] == ' ')
+        if (strMap[i] != ' ')
         {
-            objMap_.push_back(nullptr);
-        }
-        else
-        {
-            objMap_.push_back(ObjectFactory::fromLetter(strMap[i]));
+            place(ObjectFactory::fromLetter(strMap[i]), i % width_, i / width_);
         }
     }
 }
@@ -38,30 +34,29 @@ Map::Map(const std::initializer_list<std::string>& vtStrMap)
     width_ = 0;
     for (const auto& str : vtStrMap)
     {
-        if (str.size() > width_)
+        if (str.size() > static_cast<std::size_t>(width_))
             width_ = str.size();
     }
 
-    objMap_.reserve(width_ * height_);
+    std::size_t i = 0;
+    objMap_.resize(width_ * height_, nullptr);
     for (const auto& str : vtStrMap)
     {
         for (char ch : str)
         {
-            if (ch == ' ')
+            if (ch != ' ')
             {
-                objMap_.push_back(nullptr);
+                place(ObjectFactory::fromLetter(ch), i % width_, i / width_);
             }
-            else
-            {
-                objMap_.push_back(ObjectFactory::fromLetter(ch));
-            }
-        }
 
-        for (unsigned i = 0; i < width_ - str.size(); ++i)
-        {
-            objMap_.push_back(nullptr);
+            ++i;
         }
     }
+}
+
+bool Map::isValid(int x, int y) const
+{
+    return (0 <= x && x < width_ && 0 <= y && y < height_);
 }
 
 void Map::draw(int mx, int my, int sx, int sy, int w, int h) const

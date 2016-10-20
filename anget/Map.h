@@ -15,6 +15,8 @@ public:
     int getWidth() const { return width_; }
     int getHeight() const { return height_; }
 
+    bool isValid(int x, int y) const;
+
     void draw(int mx, int my, int sx = -1, int sy = -1, int w = -1, int h = -1) const;
 
     void place(const Object::sptr& obj, int x, int y);

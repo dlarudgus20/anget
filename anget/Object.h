@@ -28,18 +28,20 @@ public:
 
     bool move(int dx, int dy);
 
+    void getEffect(const Effect& eff);
+
+    virtual bool die();
+    virtual bool isEnemy(Object* other);
+
     bool isDestroyable() const { return destroyable_; }
+    bool isDead() const { return dead_; }
     int getMaxHp() const { return maxHp_; }
     int getHp() const { return hp_; }
     int getMaxMp() const { return mp_; }
     int getMp() const { return maxMp_; }
 
-    bool getHit(Object* from, int damage);
-
     bool isAttackable() const { return attackable_; }
     int getAtk() const { return atk_; }
-
-    bool giveHit(Object* to);
 
     bool isPickable() const { return pickable_; }
 
@@ -65,6 +67,7 @@ private:
 
 protected:
     bool destroyable_ = false;
+    bool dead_ = false;
     int maxHp_ = 1;
     int hp_ = 1;
     int maxMp_ = 0;

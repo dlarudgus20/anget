@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include "conlib.h"
 
@@ -67,7 +68,7 @@ int getkey()
     int ch = _getch();
     if (ch == 0 || ch == 0xe0)
         ch = 0x1000 | _getch();
-    return ch;
+    return toupper(ch);
 }
 
 unsigned gettick()

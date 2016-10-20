@@ -8,4 +8,9 @@ public:
     static const char image = '%';
 
     Slime();
+
+private:
+    void onTimer();
+
+    virtual bool collapse(Object* other) override;
 };

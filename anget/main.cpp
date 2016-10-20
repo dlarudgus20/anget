@@ -1,8 +1,11 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include "conlib.h"
 
 #include "Map.h"
 #include "Player.h"
+#include "Timer.h"
 
 int main()
 {
@@ -50,6 +53,8 @@ int main()
         "########################################################################################################################",
     };
 
+    srand(unsigned(time(nullptr)));
+
     const int fps = 20;
     unsigned prevtime;
 
@@ -75,15 +80,27 @@ int main()
             printf("0x%04x", ch);
 #endif
 
-            if (ch == Right)
-                player->move(1, 0);
-            else if (ch == Left)
-                player->move(-1, 0);
-            else if (ch == Top)
-                player->move(0, -1);
-            else if (ch == Down)
-                player->move(0, 1);
+            switch (ch)
+            {
+                case Right:
+                    player->move(1, 0);
+                    break;
+                case Left:
+                    player->move(-1, 0);
+                    break;
+                case Top:
+                    player->move(0, -1);
+                    break;
+                case Down:
+                    player->move(0, 1);
+                    break;
+                case 'Q':
+                    player->attack();
+                    break;
+            }
         }
+
+        Timer::get().runTick();
 
         map.draw(player->getX() - map.getWidth() / 2, player->getY() - map.getHeight() / 2,
             2, 2, 100, 35);

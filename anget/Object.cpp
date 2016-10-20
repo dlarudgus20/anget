@@ -1,12 +1,12 @@
 #include <stdexcept>
 #include <algorithm>
-#include "conlib.h"
 #include <utility>
 #include "conlib.h"
 
 #include "Object.h"
 #include "Map.h"
 #include "Effect.h"
+#include "Timer.h"
 
 Object::Object(char ch, std::string name)
     : objch_(ch), name_(std::move(name))
@@ -23,12 +23,16 @@ int Object::printinfo(int x, int y)
 
     if (destroyable_)
     {
+        gotoxy(x + 45, y + dy);
+        printclr(21);
         gotoxy(x, y + dy);
         printf("HP  ");
         printbar(getHp(), getMaxHp());
         printf(" %d/%d", getHp(), getMaxHp());
         dy += 1;
 
+        gotoxy(x + 45, y + dy);
+        printclr(21);
         gotoxy(x, y + dy);
         printf("MP  ");
         printbar(getMp(), getMaxMp());
@@ -38,6 +42,8 @@ int Object::printinfo(int x, int y)
 
     if (expEarnable_)
     {
+        gotoxy(x + 46, y + dy);
+        printclr(21);
         gotoxy(x, y + dy);
         printf("EXP ");
         printbar(getExp(), getMaxExp());
@@ -47,6 +53,8 @@ int Object::printinfo(int x, int y)
 
     if (moneyEarnable_)
     {
+        gotoxy(x + 6, y + dy);
+        printclr(11);
         gotoxy(x, y + dy);
         printf("Money %d$", getMoney());
         dy += 1;
@@ -95,6 +103,9 @@ bool Object::move(int dx, int dy)
     {
         if (!collapse(other.get()))
             return false;
+
+        if (other->collapse(this))
+            return false;
     }
 
     auto ptr = map_->displace(x_, y_);
@@ -102,28 +113,46 @@ bool Object::move(int dx, int dy)
     return true;
 }
 
-bool Object::getHit(Object* from, int damage)
+void Object::getEffect(const Effect & eff)
 {
-    if (!destroyable_)
-        throw std::logic_error("try to hit the undestroyable");
-    if (!from->attackable_)
-        throw std::logic_error("the unattackable tries to hit");
+    if (destroyable_)
+    {
+        hp_ = range(0, hp_ + eff.hp, maxHp_);
+    }
 
-    hp_ = std::max(hp_ - damage, 0);
-    return (hp_ == 0);
-}
+    if (moneyEarnable_)
+    {
+        money_ = std::max(0, money_ + eff.money);
+    }
 
-bool Object::giveHit(Object* to)
-{
-    if (!to->destroyable_)
-        throw std::logic_error("try to hit the undestroyable");
-    if (!attackable_)
-        throw std::logic_error("the unattackable tries to hit");
-
-    return to->getHit(this, atk_);
+    if (destroyable_ && hp_ == 0)
+    {
+        dead_ = die();
+    }
 }
 
 bool Object::picked(Object* by, Effect& eff)
+{
+    return false;
+}
+
+bool Object::die()
+{
+    objch_ = 'X';
+
+    std::weak_ptr<Object> wptr = shared_from_this();
+    Timer::get().addEntry([wptr] {
+        auto ptr = wptr.lock();
+        if (ptr)
+        {
+            ptr->map_->displace(ptr->x_, ptr->y_);
+        }
+    }, 50, 1);
+
+    return true;
+}
+
+bool Object::isEnemy(Object * other)
 {
     return false;
 }
@@ -133,9 +162,9 @@ bool Object::collapse(Object* other)
     if (other->isPickable())
     {
         Effect eff;
+
         if (other->picked(this, eff))
         {
-            money_ += eff.money;
             return true;
         }
     }

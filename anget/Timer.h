@@ -9,9 +9,9 @@ class Timer
 public:
     static Timer& get();
 
-    void addEntry(std::function<void()> fn, unsigned time, int repeat);
+    void addEntry(std::function<void()> fn, unsigned time, unsigned repeat = 0);
 
-    void runTick();
+    void runTick(unsigned dt = 1);
 
 private:
     struct TimerEntry
@@ -19,7 +19,7 @@ private:
         std::function<void()> fn;
         unsigned timeout;
         unsigned time;
-        int repeat;
+        unsigned repeat;
     };
 
     std::list<TimerEntry> entryList_;

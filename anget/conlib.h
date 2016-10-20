@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdio.h>
 #include <conio.h>
 
 enum Keys
@@ -29,3 +30,22 @@ int getkey();
 unsigned gettick();
 
 void printbar(int value, int max, int size = 40, char full = '%', char half = '*', char empty = '.');
+
+inline void printclr(unsigned length)
+{
+    for (unsigned i = 0; i < length; ++i)
+        putchar(' ');
+}
+
+inline int range(int a, int x, int b)
+{
+    if (a > b)
+        return range(b, x, a);
+
+    if (a > x)
+        return a;
+    else if (b < x)
+        return b;
+    else
+        return x;
+}
